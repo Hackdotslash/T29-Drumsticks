@@ -2,6 +2,16 @@ import React, { Component } from 'react'
 import {Button, Form, FormGroup} from 'react-bootstrap'
 import {Link} from 'react-router-dom'
 
+
+const validEmailRegex = RegExp(
+    /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
+  );
+const validateForm = errors => {
+    let valid = false;
+    Object.values(errors).forEach(val => val.length > 0 && (valid = true));
+    return valid;
+  };
+
 export class RegForm extends Component {
 
     constructor() {
@@ -11,12 +21,27 @@ export class RegForm extends Component {
             email : '',
             password : '',
             pass2 : '',
-            error : null,
+            errors : {
+                name : '',
+                email : '',
+                password : '',
+                pass2 : ''
+            },
             loading : false
         }
         this.changeHandler = this.changeHandler.bind(this)
         this.postHandler = this.postHandler.bind(this)
+        this.handleSubmit = this.handleSubmit.bind(this)
     }
+
+    handleSubmit = (event) => {
+        event.preventDefault();
+        if(validateForm(this.state.errors)) {
+          console.info('Valid Form')
+        }else{
+          console.error('Invalid Form')
+        }
+      }
 
     postHandler(){
         let ahem = this.state
@@ -39,16 +64,38 @@ export class RegForm extends Component {
     changeHandler(e){
         e.preventDefault()
         const {name,value} = e.target
-        this.setState({
-            [name]: value
-        })
-    }
-
+        let errors = this.state.errors
+        switch (name) {
+            case 'name': 
+              errors.fullName = 
+                value.length < 5
+                  ? 'Full Name must be at least 5 characters long!'
+                  : '';
+              break;
+            case 'email': 
+              errors.email = 
+                validEmailRegex.test(value)
+                  ? ''
+                  : 'Email is not valid!';
+              break;
+            case 'password': 
+              errors.password = 
+                value.length < 8
+                  ? 'Password must be at least 8 characters long!'
+                  : '';
+              break;
+            default:
+              break;
+          }
+      
+          this.setState({errors, [name]: value});
+        }
+    
     render() {
 
         return (
             <div>
-                    <Form className = "form" autoComplete = "off">
+                    <Form className = "form" autoComplete = "off" onSubmit={this.handleSubmit}>
                         <FormGroup>
                             <Form.Control type = "text" name = "name" placeholder = "Full Name" className = "input" onChange = {this.changeHandler} value = {this.state.name} id ="name"/>
                         </FormGroup>
@@ -62,9 +109,7 @@ export class RegForm extends Component {
                             <Form.Control type = "password" name = "pass2" placeholder = "Confirm Password" className = "input" onChange = {this.changeHandler} value = {this.state.pass2}/>
                         </FormGroup>
                         {this.state.error && <><small style={{ color: 'red' }}>{this.state.error}</small><br /></>}
-                        <Link to = "/" className = "butt">             
-                        <Button type = "submit" disabled = {this.state.loading} variant = "success"  onClick = {this.postHandler} style = {{marginTop: '15px', textDecoration: 'none'}}>Make the Account!</Button>
-                        </Link>
+                        <Button type = "submit" disabled = {this.state.loading} variant = "success"  onClick = {this.postHandler} style = {{marginTop: '15px', textDecoration: 'none'}} className = "button">Make the Account!</Button>
                     </Form>
             </div>
         )

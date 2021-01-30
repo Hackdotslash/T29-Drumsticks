@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import {Form,Button,FormGroup} from 'react-bootstrap'
+import {BrowserRouter as Router,Switch ,Route, Link, Redirect} from 'react-router-dom'
+import Home from '../Home'
 
 export class FormComponent extends Component {
 
@@ -8,7 +10,7 @@ export class FormComponent extends Component {
         this.state = {
             email : '',
             password : '',
-            isValid : false,
+            isValid : true,
             token : ''
         }
         this.changeHandler = this.changeHandler.bind(this)
@@ -39,13 +41,18 @@ export class FormComponent extends Component {
                 password : ahem.password
             })
         }
-        fetch(url,params).then(res=>res.json()).then(data=> 
-            
-            this.setState({token : data.token}))
+        fetch(url,params).then(res=>res.json()).then(data=>{
+            this.setState({
+                token : data.token,
+                isValid : false
+            })
+            console.log(this.state)
+        })
     
     }
 
     render() {
+        if(this.state.isValid){
         return (
             <div>
                 <Form className="form" autoComplete = "off" >
@@ -60,7 +67,12 @@ export class FormComponent extends Component {
                 </Button>
                 </Form>
             </div>
-        )
+        )}
+        else{
+            return(
+            <Redirect to="/" /> 
+     )
+        }
     }
 }
 

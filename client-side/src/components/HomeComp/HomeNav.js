@@ -1,11 +1,11 @@
 import React from 'react'
 import {Navbar,Nav} from 'react-bootstrap'
 import {BrowserRouter as Router,Switch ,Route, Link} from 'react-router-dom'
-import './Reg.css'
-function RegNav() {
+import './Home.css'
+function HomeNav() {
     return (
         <div>
-            <Navbar  className = "Nav" expand = "sm" >
+           <Navbar  className = "Nav" expand = "sm" >
                     <div>
                     <Link to = "/">
                     <Navbar.Brand href = "/" className = 'Logo'>DRUMSTICKS </Navbar.Brand> 
@@ -15,9 +15,12 @@ function RegNav() {
                    <Navbar.Toggle className = "toggle" aria-controls="basic-navbar-nav" ></Navbar.Toggle>
   <Navbar.Collapse>
     <Nav className="mr-auto">
-  
-    <Link to="/login">
-      <Nav.Link href="#link" className = "Login" id = "login">Login</Nav.Link>
+    <Link to="/">
+      <Nav.Link href="#link" className = "Home" id = "home">Home</Nav.Link>
+      </Link>
+ 
+    <Link to="/Register">
+      <Nav.Link href="#link" className = "register" id = "register">Register</Nav.Link>
       </Link>
     </Nav>
   </Navbar.Collapse>
@@ -27,4 +30,4 @@ function RegNav() {
     )
 }
 
-export default RegNav
+export default HomeNav

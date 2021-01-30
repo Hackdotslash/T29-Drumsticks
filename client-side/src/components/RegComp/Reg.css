@@ -24,11 +24,12 @@
     margin-right:auto;
 }
 
-.butt{
+.button{
     display: flex;
     justify-content:center;
     text-decoration: none !important;
+    min-width: fit-content;
 }
-.butt:hover{
+.button:hover{
     transform:scale(1.05)
 }
