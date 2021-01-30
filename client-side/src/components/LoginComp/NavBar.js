@@ -16,7 +16,7 @@ function NavBar() {
                    <Navbar.Toggle className = "toggle" aria-controls="basic-navbar-nav" ></Navbar.Toggle>
   <Navbar.Collapse>
     <Nav className="mr-auto">
-    <Link to="/Register">
+    <Link to="/">
       <Nav.Link href="#link" className = "register" id = "register">Register</Nav.Link>
       </Link>
     </Nav>

@@ -10,11 +10,12 @@ export class FormComponent extends Component {
         this.state = {
             email : '',
             password : '',
-            isValid : true,
+            isComplete : true,
             token : ''
         }
         this.changeHandler = this.changeHandler.bind(this)
         this.postHandler = this.postHandler.bind(this)
+        this.validateForm = this.validateForm.bind(this)
     }    
 
 
@@ -29,7 +30,7 @@ export class FormComponent extends Component {
     postHandler(event){
         let ahem = this.state
         event.preventDefault()
-        let url = 'https://reqres.in/api/login'
+        let url = 'http://localhost:8000/login'
         let params = {
             method : 'POST',
             headers : {
@@ -42,17 +43,24 @@ export class FormComponent extends Component {
             })
         }
         fetch(url,params).then(res=>res.json()).then(data=>{
+            if(data){
             this.setState({
                 token : data.token,
-                isValid : false
+                isComplete : false
             })
+        }
             console.log(this.state)
         })
     
     }
+    validateForm() {
+        const ahem = this.state
+        const isValid = (ahem.email.length>0 && ahem.password.length>0)
+        return isValid
+    }
 
     render() {
-        if(this.state.isValid){
+        if(this.state.isComplete){
         return (
             <div>
                 <Form className="form" autoComplete = "off" >
@@ -62,7 +70,7 @@ export class FormComponent extends Component {
                 <FormGroup>
                     <Form.Control value = {this.state.password} onChange = {this.changeHandler} name = "password" type = "password" placeholder = "password" className = "input" id = "password"/>
                 </FormGroup>
-                <Button type = "submit" variant = "success" className = "button" onClick = {this.postHandler}>
+                <Button type = "submit" disabled = {!(this.validateForm)} variant = "success" className = "button" onClick = {this.postHandler}>
                         LOGIN
                 </Button>
                 </Form>
@@ -70,7 +78,7 @@ export class FormComponent extends Component {
         )}
         else{
             return(
-            <Redirect to="/" /> 
+            <Redirect to="/Dashboard" /> 
      )
         }
     }

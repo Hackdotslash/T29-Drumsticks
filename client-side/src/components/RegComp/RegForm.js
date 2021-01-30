@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {Button, Form, FormGroup} from 'react-bootstrap'
-import {Link} from 'react-router-dom'
+import {Link,Redirect} from 'react-router-dom'
 
 
 const validEmailRegex = RegExp(
@@ -27,7 +27,8 @@ export class RegForm extends Component {
                 password : '',
                 pass2 : ''
             },
-            loading : false
+            loading : '',
+            isValid : false
         }
         this.changeHandler = this.changeHandler.bind(this)
         this.postHandler = this.postHandler.bind(this)
@@ -57,8 +58,8 @@ export class RegForm extends Component {
           password : ahem.password 
         })
       }
-      fetch('https://reqres.in/api/users',params)
-      .then(res=>res.json()).then(data=>console.log(data)).catch(()=>console.log('error'))
+      fetch('http://localhost:8000/register',params)
+      .then(res=>res.json()).then(data=>this.setState({loading : data['msg']}))
     }
 
     changeHandler(e){
@@ -67,7 +68,7 @@ export class RegForm extends Component {
         let errors = this.state.errors
         switch (name) {
             case 'name': 
-              errors.fullName = 
+              errors.name = 
                 value.length < 5
                   ? 'Full Name must be at least 5 characters long!'
                   : '';
@@ -83,6 +84,9 @@ export class RegForm extends Component {
                 value.length < 8
                   ? 'Password must be at least 8 characters long!'
                   : '';
+            case 'pass2':
+              errors.pass2 =
+              value !==errors.password.value?'passwords must match': ''
               break;
             default:
               break;
@@ -92,12 +96,22 @@ export class RegForm extends Component {
         }
     
     render() {
+      const {errors} = this.state 
+       {
 
-        return (
+        if(this.state.loading === "registered"){
+          return(
+          <Redirect to = "/login"/>
+          )
+        }
+
+       else return (
             <div>
                     <Form className = "form" autoComplete = "off" onSubmit={this.handleSubmit}>
                         <FormGroup>
                             <Form.Control type = "text" name = "name" placeholder = "Full Name" className = "input" onChange = {this.changeHandler} value = {this.state.name} id ="name"/>
+                            {errors.name.length > 0 && 
+                <span className='error'>{errors.name} hola</span>}
                         </FormGroup>
                         <FormGroup>
                             <Form.Control type = "email" name = "email" placeholder = "Email Address" className = "input" onChange = {this.changeHandler} value = {this.state.email}/>
@@ -109,10 +123,12 @@ export class RegForm extends Component {
                             <Form.Control type = "password" name = "pass2" placeholder = "Confirm Password" className = "input" onChange = {this.changeHandler} value = {this.state.pass2}/>
                         </FormGroup>
                         {this.state.error && <><small style={{ color: 'red' }}>{this.state.error}</small><br /></>}
-                        <Button type = "submit" disabled = {this.state.loading} variant = "success"  onClick = {this.postHandler} style = {{marginTop: '15px', textDecoration: 'none'}} className = "button">Make the Account!</Button>
+                        <Button type = "submit"  variant = "success"  onClick = {this.postHandler} style = {{marginTop: '15px', textDecoration: 'none'}} className = "button">Make the Account!</Button>
                     </Form>
             </div>
         )
+      }
+     
     }
 }
 
