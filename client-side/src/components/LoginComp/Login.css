@@ -1,0 +1,32 @@
+.Nav{
+    display:flex;
+    justify-content:space-between;
+    background-color:  rgba(54, 54, 54,0.99);
+}
+.Logo, .Home, .register{
+    color: white !important;
+}
+
+.form{
+    display: flex;
+    flex-direction:column;
+   
+}
+
+#email{
+    margin-top: 20vh;
+}
+
+.input{
+    width: 50%;
+    margin-left:auto;
+    margin-right:auto;
+}
+.button{
+    width:30%;
+    margin-left:auto;
+    margin-right:auto;
+}
+.button:hover{
+    transform:scale(1.05)
+}

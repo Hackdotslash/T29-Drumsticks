@@ -1,0 +1,34 @@
+.Nav{
+    display:flex;
+    justify-content:space-between;
+    background-color:  rgba(54, 54, 54,0.99);
+}
+.Logo, .Home, .Login{
+    color: white !important;
+}
+
+.form{
+    display: flex;
+    flex-direction:column;
+   
+}
+
+#name{
+    margin-top: 20vh;
+}
+
+.input{
+    width: 40%;
+    margin-top:15px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.butt{
+    display: flex;
+    justify-content:center;
+    text-decoration: none !important;
+}
+.butt:hover{
+    transform:scale(1.05)
+}
