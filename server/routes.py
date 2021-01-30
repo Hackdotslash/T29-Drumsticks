@@ -31,7 +31,7 @@ def register():
 	if found: return jsonify({"msg": "exists"})
 	try:
 		hashpass = bcrypt.generate_password_hash(data['password'])
-		user = mongo.db.users.insert_one({"name":data['name'], "email": data['email'], "password": hashpass})
+		user = mongo.db.users.insert_one({"name":data['name'], "email": data['email'], "password": hashpass, "tests":[]})
 	except:
 		return jsonify({"msg": "error"})
 	return jsonify({"msg":"registered"})
@@ -44,4 +44,11 @@ def dashboard():
 def create():
 	data = request.get_json()
 	user = mongo.db.users.find_one({"email":data['email']})
+	tests = user['tests']
+	arr={}
+	for i in range(len(data)//2):
+		arr["q"+str(i+1)] = data['q'+str(i+1)]
+		arr["a"+str(i+1)] = data['a'+str(i+1)]
+	tests.append(arr)
+	mongo.db.users.update_one({"email":data['email']}, { "$set": {"tests": tests}})
 	return jsonify({'msg':'posted'})
