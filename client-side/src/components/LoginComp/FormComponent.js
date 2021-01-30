@@ -4,13 +4,17 @@ import {Form,Button,FormGroup} from 'react-bootstrap'
 export class FormComponent extends Component {
 
     constructor(props) {
-        super()
+        super(props)
         this.state = {
             email : '',
-            password : ''
+            password : '',
+            isValid : false,
+            token : ''
         }
         this.changeHandler = this.changeHandler.bind(this)
+        this.postHandler = this.postHandler.bind(this)
     }    
+
 
     changeHandler(event){
         event.preventDefault()
@@ -20,17 +24,38 @@ export class FormComponent extends Component {
         })
     }
 
+    postHandler(event){
+        let ahem = this.state
+        event.preventDefault()
+        let url = 'https://reqres.in/api/login'
+        let params = {
+            method : 'POST',
+            headers : {
+                'Accept': 'application/json',
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                email : ahem.email,
+                password : ahem.password
+            })
+        }
+        fetch(url,params).then(res=>res.json()).then(data=> 
+            
+            this.setState({token : data.token}))
+    
+    }
+
     render() {
         return (
             <div>
-                <Form className="form" autoComplete = "off">
+                <Form className="form" autoComplete = "off" >
                 <FormGroup>
-                    <Form.Control controlId = "email" value = {this.state.email} onChange = {this.changeHandler} name = "email" type = "email" placeholder = "email" className = "input" id ="email"/>
+                    <Form.Control value = {this.state.email} onChange = {this.changeHandler} name = "email" type = "email" placeholder = "email" className = "input" id ="email"/>
                 </FormGroup>
                 <FormGroup>
-                    <Form.Control controlId = "password" value = {this.state.password} onChange = {this.changeHandler} name = "password" type = "password" placeholder = "password" className = "input" id = "password"/>
+                    <Form.Control value = {this.state.password} onChange = {this.changeHandler} name = "password" type = "password" placeholder = "password" className = "input" id = "password"/>
                 </FormGroup>
-                <Button type = "submit" variant = "success" className = "button">
+                <Button type = "submit" variant = "success" className = "button" onClick = {this.postHandler}>
                         LOGIN
                 </Button>
                 </Form>

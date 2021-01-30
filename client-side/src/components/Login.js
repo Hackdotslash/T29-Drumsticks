@@ -5,13 +5,6 @@ import FormComponent from './LoginComp/FormComponent'
 
 export class Login extends Component {
 
-    constructor(props) {
-        super()
-        this.state = {
-
-        }   
-    }
-
     render() {
         return (
             <div>

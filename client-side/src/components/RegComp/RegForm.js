@@ -62,7 +62,7 @@ export class RegForm extends Component {
                             <Form.Control type = "password" name = "pass2" placeholder = "Confirm Password" className = "input" onChange = {this.changeHandler} value = {this.state.pass2}/>
                         </FormGroup>
                         {this.state.error && <><small style={{ color: 'red' }}>{this.state.error}</small><br /></>}
-                        <Link to = "/" className = "butt">
+                        <Link to = "/" className = "butt">             
                         <Button type = "submit" disabled = {this.state.loading} variant = "success"  onClick = {this.postHandler} style = {{marginTop: '15px', textDecoration: 'none'}}>Make the Account!</Button>
                         </Link>
                     </Form>
