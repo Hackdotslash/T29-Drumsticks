@@ -40,6 +40,10 @@ def register():
 def dashboard():
 	pass
 
+@main.route('/video', methods=['POST'])
+def video():
+	return True
+
 @main.route('/tests/create', methods=['POST'])
 def create():
 	data = request.get_json()
