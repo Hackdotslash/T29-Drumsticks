@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 import {Button, Form, FormGroup} from 'react-bootstrap'
-import {Link,Redirect} from 'react-router-dom'
+import {Redirect} from 'react-router-dom'
 
 
 const validEmailRegex = RegExp(
     /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
   );
+const validPasswordRegex = RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})")
+
 const validateForm = errors => {
     let valid = false;
     Object.values(errors).forEach(val => val.length > 0 && (valid = true));
@@ -25,10 +27,11 @@ export class RegForm extends Component {
                 name : '',
                 email : '',
                 password : '',
-                pass2 : ''
+                pass2 : '',
+                bait : '*'
             },
             loading : '',
-            isValid : false
+            isValid : true
         }
         this.changeHandler = this.changeHandler.bind(this)
         this.postHandler = this.postHandler.bind(this)
@@ -65,6 +68,8 @@ export class RegForm extends Component {
     changeHandler(e){
         e.preventDefault()
         const {name,value} = e.target
+        const con = this.state.pass2
+        const pass = this.state.password
         let errors = this.state.errors
         switch (name) {
             case 'name': 
@@ -81,23 +86,26 @@ export class RegForm extends Component {
               break;
             case 'password': 
               errors.password = 
-                value.length < 8
-                  ? 'Password must be at least 8 characters long!'
-                  : '';
+              validPasswordRegex.test(value)
+              ? '' : 'Password must be at least 8 characters long and contain atleast 1 special character and one number'
+                  break;
             case 'pass2':
-              errors.pass2 =
-              value !==errors.password.value?'passwords must match': ''
-              break;
-            default:
-              break;
+              errors.pass2 = con===pass?'':'passwords must match'
           }
-      
-          this.setState({errors, [name]: value});
+          // errors.pass2 = (pass2!==password.value)?"passwords must match":''
+          if(errors.name === '' && errors.email==='' && errors.password ==='' && errors.pass2===''){
+                this.setState({
+                  isValid: false
+                })
+          }  
+
+          this.setState({errors, [name]: value            
+          });
         }
     
     render() {
       const {errors} = this.state 
-       {
+         
 
         if(this.state.loading === "registered"){
           return(
@@ -109,27 +117,33 @@ export class RegForm extends Component {
             <div>
                     <Form className = "form" autoComplete = "off" onSubmit={this.handleSubmit}>
                         <FormGroup>
-                            <Form.Control type = "text" name = "name" placeholder = "Full Name" className = "input" onChange = {this.changeHandler} value = {this.state.name} id ="name"/>
+                            <Form.Control type = "text" name = "name" placeholder = "Full Name" className = "input" onChange = {this.changeHandler} value = {this.state.name} id ="name" noValidate/>
                             {errors.name.length > 0 && 
-                <span className='error'>{errors.name} hola</span>}
+                <span className='error'>{errors.name} </span>}
                         </FormGroup>
                         <FormGroup>
-                            <Form.Control type = "email" name = "email" placeholder = "Email Address" className = "input" onChange = {this.changeHandler} value = {this.state.email}/>
+                            <Form.Control type = "email" name = "email" placeholder = "Email Address" className = "input" onChange = {this.changeHandler} value = {this.state.email} noValidate/>
+                            {errors.email.length > 0 && 
+                <span className='error'>{errors.email}</span>}
                         </FormGroup>
                         <FormGroup>
-                            <Form.Control type = "password" name = "password" placeholder = "Choose Password" className = "input" onChange = {this.changeHandler} value = {this.state.password}/>
+                            <Form.Control type = "password" name = "password" placeholder = "Choose Password" className = "input" onChange = {this.changeHandler} value = {this.state.password} noValidate/>
+                            {errors.password.length > 0 && 
+                <span className='error'>{errors.password}</span>}
                         </FormGroup>
                         <FormGroup>
-                            <Form.Control type = "password" name = "pass2" placeholder = "Confirm Password" className = "input" onChange = {this.changeHandler} value = {this.state.pass2}/>
+                            <Form.Control type = "password" name = "pass2" placeholder = "Confirm Password" className = "input" onChange = {this.changeHandler} value = {this.state.pass2} noValidate/>
+                            {errors.pass2.length > 0 && 
+                <span className='error'>{errors.pass2}</span>}
                         </FormGroup>
                         {this.state.error && <><small style={{ color: 'red' }}>{this.state.error}</small><br /></>}
-                        <Button type = "submit"  variant = "success"  onClick = {this.postHandler} style = {{marginTop: '15px', textDecoration: 'none'}} className = "button">Make the Account!</Button>
+                        <Button type = "submit"  variant = "success"  onClick = {this.postHandler} style = {{marginTop: '15px', textDecoration: 'none'}} className = "button" disabled ={this.state.isValid}> Make the Account!</Button>
                     </Form>
             </div>
         )
       }
      
     }
-}
+
 
 export default RegForm

@@ -6,5 +6,10 @@
     display: block !important;
     margin:0 auto !important;
     width: 80% !important;
-
+    margin-top: 50px !important;
+    margin-bottom:100px !important;
+}
+.button{
+    margin-bottom: 20px;
+    margin-top:20px;   
 }

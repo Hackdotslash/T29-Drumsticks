@@ -3,6 +3,10 @@ import {Form,Button,FormGroup} from 'react-bootstrap'
 import {BrowserRouter as Router,Switch ,Route, Link, Redirect} from 'react-router-dom'
 import Home from '../Home'
 
+const validEmailRegex = RegExp(
+    /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
+  );
+const validPasswordRegex = RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})")
 export class FormComponent extends Component {
 
     constructor(props) {
@@ -11,7 +15,12 @@ export class FormComponent extends Component {
             email : '',
             password : '',
             isComplete : true,
-            token : ''
+            isValid :true,
+            token : '',
+            errors : {
+                email : '',
+                password : ''
+            }
         }
         this.changeHandler = this.changeHandler.bind(this)
         this.postHandler = this.postHandler.bind(this)
@@ -22,9 +31,31 @@ export class FormComponent extends Component {
     changeHandler(event){
         event.preventDefault()
         const {name, value} = event.target
+        let errors = this.state.errors
+
+        switch(name){
+            case 'email': 
+            errors.email = 
+              validEmailRegex.test(value)
+                ? ''
+                : 'Email is not valid!';
+            break;
+          case 'password': 
+            errors.password = 
+            validPasswordRegex.test(value)
+            ? '' : 'password is not valid!';
+                break;
+            default : 
+            break;
+        }
         this.setState({
-            [name] : value
+           errors, [name] : value,
         })
+        if(errors.email==='' && errors.password ===''){
+            this.setState({
+              isValid: false
+            })
+      }  
     }
 
     postHandler(event){
@@ -60,17 +91,22 @@ export class FormComponent extends Component {
     }
 
     render() {
+        const {errors} = this.state 
         if(this.state.isComplete){
         return (
             <div>
                 <Form className="form" autoComplete = "off" >
                 <FormGroup>
                     <Form.Control value = {this.state.email} onChange = {this.changeHandler} name = "email" type = "email" placeholder = "email" className = "input" id ="email"/>
+                    {errors.email.length > 0 && 
+                <span className='error'>{errors.email}</span>}
                 </FormGroup>
                 <FormGroup>
                     <Form.Control value = {this.state.password} onChange = {this.changeHandler} name = "password" type = "password" placeholder = "password" className = "input" id = "password"/>
+                    {errors.password.length > 0 && 
+                <span className='error'>{errors.password}</span>}
                 </FormGroup>
-                <Button type = "submit" disabled = {!(this.validateForm)} variant = "success" className = "button" onClick = {this.postHandler}>
+                <Button type = "submit" disabled = {!(this.validateForm)} variant = "success" className = "button" onClick = {this.postHandler} disabled = {this.state.isValid}>
                         LOGIN
                 </Button>
                 </Form>

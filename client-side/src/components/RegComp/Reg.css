@@ -33,3 +33,10 @@
 .button:hover{
     transform:scale(1.05)
 }
+.error {
+    display: flex;
+    color:#db2269;
+    font-size: 0.625em;
+    justify-content: center;
+    font-weight: bold;
+  }
